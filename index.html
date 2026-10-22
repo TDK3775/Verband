@@ -1,0 +1,265 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Cyber-Check Wohnungswirtschaft</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Spalte, max. 880px. Intro -> 5 Fragenschirme (je Schicht) -> Auswertung mit Radar, Ampel und Partnerkarten */
+:root{
+  --bg:#EEF2F4; --surface:#FFFFFF; --ink:#13242D; --muted:#566A74; --line:#D3DDE2;
+  --accent:#0A6C74; --accent-ink:#FFFFFF; --accent-soft:#DCEFF0;
+  --good:#1D7A46; --good-soft:#DDF1E4; --warn:#9A6200; --warn-soft:#FBEBC8; --bad:#B3261E; --bad-soft:#FBDEDA;
+  --f-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --f-body:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1A20; --surface:#16262E; --ink:#E6EEF1; --muted:#9BB0B9; --line:#2A3E48;
+  --accent:#4FC3CB; --accent-ink:#06242A; --accent-soft:#173A40;
+  --good:#6FD39A; --good-soft:#183A29; --warn:#F0B64A; --warn-soft:#3F3015; --bad:#FF8A80; --bad-soft:#4A1F1C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1A20; --surface:#16262E; --ink:#E6EEF1; --muted:#9BB0B9; --line:#2A3E48;
+  --accent:#4FC3CB; --accent-ink:#06242A; --accent-soft:#173A40;
+  --good:#6FD39A; --good-soft:#183A29; --warn:#F0B64A; --warn-soft:#3F3015; --bad:#FF8A80; --bad-soft:#4A1F1C; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body);padding-block:0 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:880px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);line-height:1.12;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(24px,4vw,32px);font-weight:700;letter-spacing:-.01em}
+h3{font-size:19px;font-weight:600}
+p{margin:0}
+.proto{font:500 12px/1.4 var(--f-mono);color:var(--muted);padding:12px 0;display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--line)}
+.proto b{color:var(--accent);font-weight:500;letter-spacing:.06em;text-transform:uppercase}
+.label{font:500 12px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.btn{font:600 16px/1 var(--f-body);background:var(--accent);color:var(--accent-ink);border:2px solid var(--accent);border-radius:6px;padding:14px 22px;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn[disabled]{opacity:.4;cursor:not-allowed;filter:none}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.view{padding-top:36px;display:flex;flex-direction:column;gap:28px}
+
+/* Intro */
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:36px;align-items:center}
+.hero-text{display:flex;flex-direction:column;gap:20px;align-items:flex-start;min-width:0}
+.hero-text p{color:var(--muted);max-width:52ch}
+.meta{display:flex;gap:18px;flex-wrap:wrap}
+.stack{display:flex;flex-direction:column;gap:6px;min-width:0}
+.stack-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.stack-row .n{font:500 13px var(--f-mono);color:var(--accent);width:20px}
+.stack-row .t{font-weight:600;font-size:15px}
+.stack-row .o{font:500 11px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;text-align:right}
+.stack-row:nth-child(1){margin-inline:0}.stack-row:nth-child(2){margin-inline:6px}.stack-row:nth-child(3){margin-inline:12px}.stack-row:nth-child(4){margin-inline:18px}.stack-row:nth-child(5){margin-inline:24px}
+
+/* Fragen */
+.progress{display:flex;flex-direction:column;gap:10px}
+.bar{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.bar i{height:6px;border-radius:3px;background:var(--line)}
+.bar i.done{background:var(--accent)}
+.bar i.now{background:var(--accent);opacity:.45}
+.layer-head{display:flex;flex-direction:column;gap:8px}
+.layer-head p{color:var(--muted);max-width:62ch}
+.owner{align-self:flex-start;font:500 12px var(--f-mono);background:var(--accent-soft);color:var(--accent);padding:4px 10px;border-radius:4px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.q-text{font-weight:600;font-size:17px;max-width:60ch}
+.q-hint{color:var(--muted);font-size:14px;max-width:62ch;margin-top:-6px}
+.opts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.opt{font:500 15px/1.2 var(--f-body);color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:6px;padding:12px 8px;cursor:pointer;min-height:48px}
+.opt:hover{border-color:var(--accent)}
+.opt[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+/* Ergebnis */
+.score-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:center}
+.score-big{display:flex;flex-direction:column;gap:14px}
+.score-num{font:700 clamp(56px,12vw,84px)/1 var(--f-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.score-num small{font-size:.42em;color:var(--muted);font-weight:500}
+.radar{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px}
+.radar svg{display:block;width:100%;height:auto;max-width:100%}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:500 12px var(--f-mono);padding:5px 10px;border-radius:4px;display:inline-flex;gap:6px;align-items:center}
+.chip::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.chip.good{background:var(--good-soft);color:var(--good)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)}
+.res{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.res-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;padding:18px 20px;align-items:center}
+.res-head .meter{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.res-head .meter i{height:8px;border-radius:2px;background:var(--line)}
+.res.good .meter i.on{background:var(--good)}.res.warn .meter i.on{background:var(--warn)}.res.bad .meter i.on{background:var(--bad)}
+.res-body{padding:0 20px 20px;display:flex;flex-direction:column;gap:14px}
+.res-body>p{color:var(--muted);max-width:64ch}
+.gaps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.gaps li{display:flex;gap:10px}
+.gaps li::before{content:"–";color:var(--muted)}
+.gaps li.ok{color:var(--muted)}
+.partner{border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.partner .why{font-size:14px;color:var(--muted)}
+.partner .why b{color:var(--ink);font-weight:600}
+.partner .what{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px;font-size:15px}
+.contact{font:400 13.5px/1.55 var(--f-mono);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-wrap:anywhere}
+.p-actions{display:flex;gap:10px;flex-wrap:wrap}
+.p-actions a{font:600 15px var(--f-body);text-decoration:none;border-radius:6px;padding:11px 16px;border:2px solid var(--accent);color:var(--accent)}
+.p-actions a.main{background:var(--accent);color:var(--accent-ink)}
+.tagline{font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.consent{font-size:13px;color:var(--muted);max-width:70ch}
+.sec-title{display:flex;flex-direction:column;gap:6px}
+@media (max-width:700px){
+  .hero,.score-grid{grid-template-columns:1fr}
+  .opts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stack-row:nth-child(n){margin-inline:0}
+}
+@media (prefers-reduced-motion:no-preference){.view{animation:in .25s ease-out}@keyframes in{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}}
+</style>
+
+<div class="wrap">
+  <div class="proto"><b>Prototyp</b><span>Texte, Partnerangaben und Anfrageweg sind vorläufig. Antworten bleiben im Browser.</span></div>
+  <main id="app"></main>
+</div>
+
+<script>
+var LAYERS=[
+{id:1,name:"Technische Prävention",owner:"IT-Dienstleister",goal:"Sicherheitslücken früh erkennen, Angriffsflächen verkleinern und die IT widerstandsfähiger machen.",
+ gapText:"Der Basisbetrieb Ihres IT-Dienstleisters ist nicht dasselbe wie Sicherheitsüberwachung. Hier entscheidet sich, ob ein Angriff nachts oder am Wochenende bemerkt wird.",
+ qs:[
+ {t:"Wird Ihre IT von einem Dienstleister betreut, inklusive regelmäßiger Updates und Patches?",h:"Etwa Server, Arbeitsplätze, Mieterverwaltungssoftware und Verwalter-Portale.",p:"eye",r:"Keine geregelte IT-Betreuung mit Patchmanagement",k:"IT-Betreuung und Patchmanagement"},
+ {t:"Werden Ihre Systeme rund um die Uhr auf Angriffe überwacht (MDR/SOC), auch nachts und am Wochenende?",h:"Gemeint ist eine aktive Überwachung mit Reaktion, nicht nur ein Virenscanner.",p:"eye",r:"Keine durchgehende Sicherheitsüberwachung",k:"24/7-Überwachung"},
+ {t:"Führen Sie regelmäßig Schwachstellenscans durch und beheben die Funde systematisch?",h:"Auch Gebäudetechnik, Smart-Meter-Anbindungen und Zugänge von Dienstleistern gehören dazu.",p:"eye",r:"Keine regelmäßigen Schwachstellenscans",k:"Schwachstellenmanagement"}]},
+{id:2,name:"Organisatorische Prävention",owner:"Unternehmen",goal:"Menschliche Fehler verringern und das Sicherheitsbewusstsein im Team stärken.",
+ gapText:"Viele Angriffe beginnen mit einer E-Mail an die Sachbearbeitung oder die Hausverwaltung. Schulung und klare Abläufe senken dieses Risiko deutlich.",
+ qs:[
+ {t:"Gibt es regelmäßige Awareness-Schulungen für alle Mitarbeitenden?",h:"Auch für Hausmeister, Quartiersmanagement und Aushilfen mit E-Mail-Zugang.",p:"bsi",r:"Keine regelmäßigen Awareness-Schulungen",k:"Awareness-Schulungen"},
+ {t:"Werden Phishing-Simulationen durchgeführt?",h:"Also gezielte Test-Mails an die eigene Belegschaft mit anschließender Auswertung.",p:"bsi",r:"Keine Phishing-Simulationen",k:"Phishing-Simulationen"},
+ {t:"Wissen Ihre Mitarbeitenden, an wen sie sich bei einer verdächtigen E-Mail wenden?",h:"Eine feste Ansprechperson oder ein Meldeweg, den alle kennen.",p:"bsi",r:"Meldeweg für verdächtige E-Mails fehlt",k:"Meldeweg"}]},
+{id:3,name:"Finanzielle Absicherung",owner:"Cyberversicherer",goal:"Die finanziellen Folgen eines Cybervorfalls begrenzen.",
+ gapText:"Ein Vorfall kann schnell hohe Kosten für Wiederherstellung, Betriebsunterbrechung und Haftung verursachen. Entscheidend ist, was Ihre Police tatsächlich abdeckt.",
+ qs:[
+ {t:"Besteht eine Cyberversicherung?",h:"Eine allgemeine Betriebs- oder Inhaltsversicherung ersetzt sie in der Regel nicht.",p:"asw",r:"Keine Cyberversicherung",k:"Cyberversicherung"},
+ {t:"Sind Betriebsunterbrechung, Wiederherstellungskosten und Haftungsansprüche mitversichert?",h:"Zum Beispiel Ansprüche von Mietern, deren Daten abgeflossen sind.",p:"asw",r:"Umfang des Versicherungsschutzes unklar",k:"Deckungsumfang"},
+ {t:"Kennen Sie die Voraussetzungen und Obliegenheiten Ihrer Police?",h:"Manche Policen verlangen bestimmte Sicherheitsmaßnahmen, etwa Backups oder Updates.",p:"asw",r:"Obliegenheiten der Police nicht bekannt",k:"Obliegenheiten"}]},
+{id:4,name:"Krisenreaktion",owner:"Versicherer und Krisendienstleister",goal:"Schäden begrenzen, den Geschäftsbetrieb schnell wiederherstellen und Folgeschäden reduzieren.",
+ gapText:"Im Ernstfall zählen die ersten Stunden. Wer vorher weiß, wen er anruft, verliert weniger Zeit und weniger Geld.",
+ qs:[
+ {t:"Gibt es einen Notfallplan, der festlegt, wer im Ernstfall wen anruft?",h:"Mit Telefonnummern, die auch ohne funktionierende IT erreichbar sind.",p:"asw",r:"Kein Notfallplan",k:"Notfallplan"},
+ {t:"Haben Sie Zugang zu IT-Forensik und Krisendienstleistern, zum Beispiel über Ihre Versicherung?",h:"Dazu gehören Analyse, Eindämmung, rechtliche Beratung und Krisenkommunikation.",p:"asw",r:"Kein Zugang zu Forensik und Krisendienstleistern",k:"Forensik und Krisendienstleister"},
+ {t:"Wurde der Ernstfall schon einmal geübt?",h:"Zum Beispiel als Planspiel mit Geschäftsführung und IT.",p:"asw",r:"Ernstfall nicht geübt",k:"Notfallübung"}]},
+{id:5,name:"Datenschutz und Compliance",owner:"Unternehmen",goal:"Rechtliche Risiken senken und verantwortungsvoll mit personenbezogenen Daten umgehen.",
+ gapText:"Wohnungsunternehmen verarbeiten viele Mieterdaten. Nach einem Vorfall laufen Meldefristen, die Sie dann nicht mehr nachlesen wollen.",
+ qs:[
+ {t:"Sind DSGVO-Dokumentation und Verarbeitungsverzeichnis aktuell?",h:"Inklusive Mieter-, Bewerber- und Dienstleisterdaten.",p:"tdw",r:"DSGVO-Dokumentation nicht aktuell",k:"DSGVO-Dokumentation"},
+ {t:"Ist ein Datenschutzbeauftragter benannt?",h:"Intern oder extern.",p:"tdw",r:"Kein Datenschutzbeauftragter benannt",k:"Datenschutzbeauftragter"},
+ {t:"Kennen Sie Ihre Melde- und Informationspflichten nach einem Vorfall, zum Beispiel die 72-Stunden-Frist?",h:"Gegenüber der Aufsichtsbehörde und gegenüber betroffenen Personen.",p:"tdw",r:"Meldepflichten nicht bekannt",k:"Meldepflichten"}]}
+];
+
+var PARTNERS={
+ eye:{name:"Eye Security",tag:"Kooperationspartner",what:["Überwachung Ihrer IT rund um die Uhr, expertengeführt und KI-gestützt","Reaktion auf Auffälligkeiten, bevor daraus ein Schaden wird","Sichtbar machen von Schwachstellen in Ihrer Umgebung"],
+  contact:null,main:{l:"Eye Security ansehen",u:"https://eye.security/de"}},
+ bsi:{name:"BSI: Basismaßnahmen der Cyber-Sicherheit",tag:"Kostenlose Ressource des BSI",what:["Leitfaden mit Basismaßnahmen, die Sie im Unternehmen selbst umsetzen können","Geeignet als Grundlage für Schulung und interne Regeln"],
+  contact:null,main:{l:"Dokument öffnen (PDF)",u:"https://www.allianz-fuer-cybersicherheit.de/SharedDocs/Downloads/Webs/ACS/DE/BSI-CS/BSI-CS_006.pdf?__blob=publicationFile&v=1"}},
+ asw:{name:"ASW südwest",tag:"Kooperationspartner",full:"ASW südwest Assekuranz- und Finanzierungsvermittlungsservice GmbH",
+  what:["Beratung und Vermittlung einer Cyberversicherung","Prüfung, was Ihr Versicherungsschutz im Ernstfall abdeckt","Zugang zu Krisen- und Forensikdienstleistern über den Versicherungsschutz"],
+  contact:["Ansprechpartnerin: Birgit Doering","Telefon: +49 69 97065224 (Montag bis Donnerstag)"],main:{l:"asw-suedwest.de",u:"https://asw-suedwest.de"}},
+ tdw:{name:"TdW südwest",tag:"Kooperationspartner der Verbandsgruppe südwest",full:"Treuhandgesellschaft für die Südwestdeutsche Wohnungswirtschaft mbH",
+  what:["Unterstützung bei der Umsetzung der DSGVO und der Dokumentation","Hilfe bei Melde- und Informationspflichten nach einem Vorfall","Kenntnis der Wohnungswirtschaft"],
+  contact:["Ansprechpartner: Markus Henrich","Telefon: (069) 970 65-158","E-Mail: markus.henrich@tdwsuedwest.de","Lise-Meitner-Straße 4, 60486 Frankfurt am Main"],main:{l:"tdwsuedwest.de",u:"https://www.tdwsuedwest.de"}}
+};
+var OPTS=[["ja","Ja",2],["teils","Teilweise",1],["nein","Nein",0],["unbekannt","Weiß ich nicht",0]];
+var ans={}; var step=0; // 0 intro, 1..5 layers, 6 result
+var app=document.getElementById('app');
+
+function key(l,i){return l+'-'+i}
+function layerScore(L){var s=0;L.qs.forEach(function(q,i){var a=ans[key(L.id,i)];OPTS.forEach(function(o){if(o[0]===a)s+=o[2]})});return s}
+function level(s){return s>=5?'good':s>=3?'warn':'bad'}
+var LV={good:'Gut aufgestellt',warn:'Teilweise abgedeckt',bad:'Handlungsbedarf'};
+
+function intro(){
+  var rows=LAYERS.map(function(L){return '<div class="stack-row"><span class="n">'+L.id+'</span><span class="t">'+L.name+'</span><span class="o">'+L.owner.split(' und ')[0]+'</span></div>'}).join('');
+  return '<section class="view"><div class="hero"><div class="hero-text"><span class="label">Readiness-Check · Wohnungswirtschaft</span>'+
+  '<h1>Wie gut ist Ihre IT-Sicherheit wirklich aufgestellt?</h1>'+
+  '<p>Wirksamer Schutz besteht aus fünf Schichten. Kein einzelner Akteur deckt alle ab. Der Check zeigt Ihnen in etwa drei Minuten, welche Schichten bei Ihnen stehen und wo Lücken sind.</p>'+
+  '<div class="meta"><span class="label">15 Fragen</span><span class="label">Ohne Anmeldung</span><span class="label">Sofort-Auswertung</span></div>'+
+  '<button class="btn" id="start">Check starten</button></div><div class="stack" aria-label="Die fünf Schutzschichten">'+rows+'</div></div></section>';
+}
+
+function question(L){
+  var bar='<div class="bar">'+LAYERS.map(function(x){return '<i class="'+(x.id<L.id?'done':x.id===L.id?'now':'')+'"></i>'}).join('')+'</div>';
+  var qs=L.qs.map(function(q,i){
+    var cur=ans[key(L.id,i)];
+    var o=OPTS.map(function(op){return '<button type="button" class="opt" data-q="'+key(L.id,i)+'" data-v="'+op[0]+'" aria-pressed="'+(cur===op[0])+'">'+op[1]+'</button>'}).join('');
+    return '<div class="q" role="group" aria-label="Frage '+(i+1)+'"><p class="q-text">'+q.t+'</p><p class="q-hint">'+q.h+'</p><div class="opts">'+o+'</div></div>'}).join('');
+  var all=L.qs.every(function(q,i){return ans[key(L.id,i)]});
+  return '<section class="view"><div class="progress"><span class="label">Schicht '+L.id+' von 5</span>'+bar+'</div>'+
+  '<div class="layer-head"><span class="owner">Verantwortlich: '+L.owner+'</span><h2>'+L.name+'</h2><p>'+L.goal+'</p></div>'+qs+
+  '<div class="nav"><button class="btn ghost" id="back">Zurück</button><button class="btn" id="next"'+(all?'':' disabled')+'>'+(L.id===5?'Auswertung ansehen':'Weiter')+'</button></div></section>';
+}
+
+function radar(scores){
+  var cx=180,cy=160,R=100,n=5,pts=[],rings='',axes='',labs='';
+  function P(i,r){var a=-Math.PI/2+i*2*Math.PI/n;return [cx+r*Math.cos(a),cy+r*Math.sin(a)]}
+  [2,4,6].forEach(function(v){var p=[];for(var i=0;i<n;i++)p.push(P(i,R*v/6).join(','));rings+='<polygon points="'+p.join(' ')+'" fill="none" stroke="var(--line)" stroke-width="1"/>'});
+  var dots='';
+  for(var i=0;i<n;i++){var e=P(i,R);axes+='<line x1="'+cx+'" y1="'+cy+'" x2="'+e[0]+'" y2="'+e[1]+'" stroke="var(--line)" stroke-width="1"/>';
+    var p=P(i,R*scores[i]/6);pts.push(p.join(','));dots+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4" fill="var(--accent)"/>';
+    var lp=P(i,R+22);var anc=lp[0]<cx-4?'end':lp[0]>cx+4?'start':'middle';
+    labs+='<text x="'+lp[0]+'" y="'+(lp[1]+4)+'" text-anchor="'+anc+'" font-size="12" font-family="IBM Plex Mono,monospace" fill="var(--muted)">'+(i+1)+' · '+['Technik','Organisation','Finanzen','Krise','Datenschutz'][i]+'</text>'}
+  return '<svg viewBox="0 0 360 320" role="img" aria-label="Radar der fünf Schichten">'+rings+axes+'<polygon points="'+pts.join(' ')+'" fill="var(--accent)" fill-opacity=".2" stroke="var(--accent)" stroke-width="2"/>'+dots+labs+'</svg>';
+}
+
+function partnerCard(id,hits){
+  var p=PARTNERS[id];
+  var why=hits.map(function(h){return h}).join('; ');
+  var what='<ul class="what">'+p.what.map(function(w){return '<li>'+w+'</li>'}).join('')+'</ul>';
+  var contact=p.contact?'<div class="contact">'+(p.full?p.full+'<br>':'')+p.contact.join('<br>')+'</div>':'';
+  return '<div class="partner"><span class="tagline">'+p.tag+'</span><h3>'+p.name+'</h3><p class="why"><b>Warum Sie das sehen:</b> '+why+'.</p>'+what+contact+
+   '<div class="p-actions"><a class="main" href="'+p.main.u+'" target="_blank" rel="noopener">'+p.main.l+'</a></div>'+
+   (id==='bsi'?'':'<p class="consent">Anfragen an Partner erfolgen erst nach Ihrer ausdrücklichen Einwilligung. Ihre Check-Antworten werden nicht ohne Ihre Zustimmung weitergegeben.</p>')+'</div>';
+}
+
+function result(){
+  var scores=LAYERS.map(layerScore); var total=Math.round(scores.reduce(function(a,b){return a+b},0)/30*100);
+  var cnt={good:0,warn:0,bad:0}; scores.forEach(function(s){cnt[level(s)]++});
+  var order=LAYERS.map(function(L,i){return i}).sort(function(a,b){return scores[a]-scores[b]});
+  // Partner-Treffer sammeln (je Partner eine Karte), Reihenfolge nach dringendster Schicht
+  var hitsBy={},pOrder=[];
+  order.forEach(function(i){LAYERS[i].qs.forEach(function(q,j){var a=ans[key(LAYERS[i].id,j)];if(a==='nein'||a==='unbekannt'){
+    if(!hitsBy[q.p]){hitsBy[q.p]=[];pOrder.push(q.p)} hitsBy[q.p].push(q.r)}})});
+  var cards=order.map(function(i){
+    var L=LAYERS[i],s=scores[i],lv=level(s);
+    var meter='<div class="meter">'+[0,1,2,3,4,5].map(function(k){return '<i class="'+(k<s?'on':'')+'"></i>'}).join('')+'</div>';
+    var gaps=L.qs.map(function(q,j){var a=ans[key(L.id,j)];var ok=(a==='ja');var tx=a==='ja'?'vorhanden':a==='teils'?'teilweise':a==='nein'?'fehlt':'unklar';
+      return '<li class="'+(ok?'ok':'')+'">'+q.k+': '+tx+'</li>'}).join('');
+    var show=lv!=='good'?'<p>'+L.gapText+'</p>':'<p>Diese Schicht ist bei Ihnen gut abgedeckt.</p>';
+    var pcs=[];L.qs.forEach(function(q,j){var a=ans[key(L.id,j)];if((a==='nein'||a==='unbekannt')&&pcs.indexOf(q.p)<0)pcs.push(q.p)});
+    var inline=pcs.map(function(pid){return '<p class="label" style="margin-top:4px">Unterstützung: '+PARTNERS[pid].name+' (siehe unten)</p>'}).join('');
+    return '<article class="res '+lv+'"><div class="res-head"><div><span class="label">Schicht '+L.id+' · '+L.owner+'</span><h3>'+L.name+'</h3></div><span class="chip '+lv+'">'+LV[lv]+' · '+s+'/6</span>'+meter+'</div>'+
+     '<div class="res-body">'+show+'<ul class="gaps">'+gaps+'</ul>'+inline+'</div></article>'}).join('');
+  var partners=pOrder.length?'<div class="sec-title"><span class="label">Empfehlungen</span><h2>Hier können wir Sie unterstützen</h2><p style="color:var(--muted)">Diese Karten erscheinen, weil Sie mindestens eine Frage mit „Nein“ oder „Weiß ich nicht“ beantwortet haben.</p></div>'+
+     pOrder.map(function(pid){return partnerCard(pid,hitsBy[pid])}).join(''):'<div class="partner"><h3>Keine offenen Lücken</h3><p class="why">Sie haben keine Frage mit „Nein“ oder „Weiß ich nicht“ beantwortet. Prüfen Sie die mit „Teilweise“ markierten Punkte.</p></div>';
+  return '<section class="view"><div class="score-grid"><div class="score-big"><span class="label">Ihr Ergebnis</span><div class="score-num">'+total+'<small> %</small></div>'+
+   '<p style="color:var(--muted);max-width:44ch">Der Gesamtwert ist ein Durchschnitt. Eine schwache Schicht bleibt ein Risiko, auch wenn die anderen stark sind. Achten Sie deshalb auf die einzelnen Schichten.</p>'+
+   '<div class="chips"><span class="chip good">'+cnt.good+' gut</span><span class="chip warn">'+cnt.warn+' teilweise</span><span class="chip bad">'+cnt.bad+' Handlungsbedarf</span></div></div>'+
+   '<div class="radar">'+radar(scores)+'</div></div>'+
+   '<div class="sec-title"><span class="label">Die fünf Schichten</span><h2>Ihre Auswertung, dringendste zuerst</h2></div>'+cards+partners+
+   '<div class="nav"><button class="btn ghost" id="again">Check erneut durchführen</button></div></section>';
+}
+
+function render(){
+  app.innerHTML = step===0?intro():step===6?result():question(LAYERS[step-1]);
+  window.scrollTo(0,0);
+}
+app.addEventListener('click',function(e){
+  var t=e.target.closest('button'); if(!t) return;
+  if(t.id==='start'){step=1;render()}
+  else if(t.id==='back'){step=Math.max(0,step-1);render()}
+  else if(t.id==='next'){step++;render()}
+  else if(t.id==='again'){ans={};step=0;render()}
+  else if(t.classList.contains('opt')){
+    ans[t.dataset.q]=t.dataset.v;
+    var g=t.parentElement;[].forEach.call(g.children,function(b){b.setAttribute('aria-pressed',b===t)});
+    var L=LAYERS[step-1]; var all=L.qs.every(function(q,i){return ans[key(L.id,i)]});
+    document.getElementById('next').disabled=!all;
+  }
+});
+render();
+</script>
+
+</body></html>
